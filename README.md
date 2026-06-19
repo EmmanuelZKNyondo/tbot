@@ -24,16 +24,25 @@
 7. update `config/settings.json` and `.env ` to meet your account, broker details as well as trading parameters 
 
 
-### Developer Understanding
+### Developer Workflow Understanding
 Flow of the application 
 
-    main_test.py
-      ↓
+    main_test.py / main.py
+        |
+        ↓
     MarketLoop (scheduler)
-      ↓
+        |
+        ↓
     TradeOrchestrator (brain pipeline)
-      ↓
+        |
+        ↓
     ExecutionRouter (MT5 or dry-run)
+        |
+        ↓
+    Components (Executors, ErrorHandlers, Loaders, SymbolInfo, Metrics Files, Journal, Engines etc.)
+
+  execution mode: mt5_direct | mt5_bridge
 
 
-    execution mode: test | mt5_direct | mt5_bridge
+  # <span style="color: #f0a000; vertical-align: middle">🪪License</span>
+  Copyright (c) 2026 [Emmanuel Z.K. Nyondo]. All rights reserved. This repository contains no license. You may view the source code, but you do not have permission to modify, redistribute, or use it commercially.
