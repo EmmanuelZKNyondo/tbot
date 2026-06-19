@@ -25,3 +25,4 @@ Thumbs.db
 
 # Secrets
 config/secrets.json
+config/settings.json

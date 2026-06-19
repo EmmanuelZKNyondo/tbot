@@ -1,0 +1,325 @@
+{
+  "system": {
+    "name": "TBot",
+    "version": "2.0",
+    "mode": "live",
+    "timezone": "UTC",
+    "auto_start": true,
+    "debug_mode": true,
+    "show_stacktrace": true
+  },
+
+  "account": {
+    "base_currency": "USD",
+    "initial_balance": 200,
+    "compounding_enabled": true,
+    "equity_tracking": true
+  },
+
+  "account_profiles": {
+    "active_profile": "demo",
+
+    "profiles": {
+      "main": {
+        "env_key": "MT5_ACCOUNT_MAIN",
+        "base_currency": "USD",
+        "risk_mode": "live"
+      },
+
+      "demo": {
+        "env_key": "MT5_ACCOUNT_DEMO",
+        "base_currency": "USD",
+        "risk_mode": "paper"
+      }
+    }
+  },
+
+  "risk_governor": {
+    "max_total_drawdown_percent": 15,
+    "daily_drawdown_limit_percent": 3,
+    "weekly_drawdown_limit_percent": 5,
+    "max_portfolio_exposure_percent": 10,
+    "correlation_exposure_limit_enabled": true,
+    "max_correlation_threshold": 0.7,
+    "kill_switch_enabled": true,
+    "stop_trading_on_breach": true
+  },
+
+  "execution_engine": {
+    "mode": "mt5_direct",
+    "order_type": "market_and_limit_supported",
+    "slippage_control_enabled": true,
+    "spread_filter_enabled": true,
+    "max_allowed_spread": 2.5,
+    "execution_retry_attempts": 3
+  },
+
+  "global_market_filters": {
+    "avoid_high_impact_news": true,
+    "news_blackout_minutes_before": 60,
+    "news_blackout_minutes_after": 30,
+    "avoid_weekends": true,
+    "avoid_rollover_period": true,
+    "minimum_liquidity_required": true
+  },
+
+  "decision_engine": {
+    "type": "rule_based_deterministic",
+
+    "minimum_trade_score": 80,
+
+    "required_conditions": {
+      "trend_alignment": true,
+      "structure_confirmation": true,
+      "risk_within_limits": true,
+      "session_valid": true,
+      "spread_valid": true,
+      "no_news_block": true
+    }
+  },
+
+  "pairs": {
+
+    "EURUSD": {
+      "enabled": false,
+      "execution_mode": "automatic",
+
+      "top_down_analysis": {
+        "timeframes": ["D1", "H4", "H1", "M15"],
+        "trend_filter": "EMA_200",
+        "structure_model": "market_structure",
+        "require_bos_confirmation": true,
+        "require_alignment_across_timeframes": true,
+        "min_confluence_score": 75
+      },
+
+      "risk_management": {
+        "fixed_lot_size": 0.02,
+        "risk_per_trade_percent": 1.0,
+        "max_daily_risk_percent": 3.0,
+        "max_open_positions": 1,
+        "allow_reentry_same_direction": false
+      },
+
+      "trade_limits": {
+        "max_trades_per_day": 5,
+        "max_trades_per_week": 20,
+        "max_consecutive_losses": 3,
+        "cooldown_after_loss_minutes": 60
+      },
+
+      "sessions": {
+        "allowed": ["london", "new_york"],
+        "london_active": true,
+        "new_york_active": true,
+        "asian_session_enabled": false
+      },
+
+      "stop_loss_take_profit": {
+        "sl_method": "ATR",
+        "atr_period": 14,
+        "atr_multiplier": 1.5,
+        "tp_method": "risk_reward",
+        "risk_reward_ratio": 2.0,
+        "break_even_at_rr": 1.0,
+        "trailing_stop_enabled": true,
+        "trailing_method": "ATR"
+      },
+
+      "market_conditions": {
+        "avoid_high_spread": true,
+        "avoid_low_volatility": true,
+        "min_atr_threshold": 0.0005,
+        "max_atr_threshold": 0.0100
+      },
+
+      "trade_style": {
+        "mode": "day_trade",
+        "allowed_values": ["scalping", "day_trade", "swing"],
+
+        "bos_validation": {
+          "scalping": {
+            "require_retest": false,
+            "confirmation_candles": 0,
+            "max_confirmation_delay_bars": 3
+          },
+
+          "day_trade": {
+            "require_retest": true,
+            "confirmation_candles": 1,
+            "max_confirmation_delay_bars": 10
+          },
+
+          "swing": {
+            "require_retest": true,
+            "confirmation_candles": 2,
+            "max_confirmation_delay_bars": 50
+          }
+        }
+      }
+    },
+
+    "GBPJPY": {
+      "enabled": false,
+      "execution_mode": "automatic",
+
+      "top_down_analysis": {
+        "timeframes": ["D1", "H1", "M5"],
+        "trend_filter": "EMA_200",
+        "structure_model": "market_structure",
+        "require_bos_confirmation": true,
+        "require_alignment_across_timeframes": true,
+        "min_confluence_score": 80
+      },
+
+      "risk_management": {
+        "fixed_lot_size": 0.02,
+        "risk_per_trade_percent": 0.7,
+        "max_daily_risk_percent": 2.5,
+        "max_open_positions": 1,
+        "allow_reentry_same_direction": false
+      },
+
+      "trade_limits": {
+        "max_trades_per_day": 3,
+        "max_consecutive_losses": 2,
+        "max_trades_per_week": 20,
+        "cooldown_after_loss_minutes": 90
+      },
+
+      "sessions": {
+        "allowed": ["london", "new_york"]
+      },
+
+      "stop_loss_take_profit": {
+        "sl_method": "ATR",
+        "atr_period": 14,
+        "atr_multiplier": 2.0,
+        "tp_method": "risk_reward",
+        "risk_reward_ratio": 2.5,
+        "break_even_at_rr": 1.0,
+        "trailing_stop_enabled": true
+      },
+
+      "market_conditions": {
+        "avoid_high_spread": true,
+        "avoid_extreme_volatility": true
+      },
+
+      "trade_style": {
+        "mode": "swing",
+        "allowed_values": ["scalping", "day_trade", "swing"],
+
+        "bos_validation": {
+          "scalping": {
+            "require_retest": false,
+            "confirmation_candles": 0,
+            "max_confirmation_delay_bars": 3
+          },
+
+          "day_trade": {
+            "require_retest": true,
+            "confirmation_candles": 1,
+            "max_confirmation_delay_bars": 10
+          },
+
+          "swing": {
+            "require_retest": true,
+            "confirmation_candles": 2,
+            "max_confirmation_delay_bars": 50
+          }
+        }
+      }
+    },
+
+    "XAUUSD": {
+      "enabled": true,
+      "execution_mode": "automatic",
+
+      "top_down_analysis": {
+        "timeframes": ["W1", "D1", "H4", "H1"],
+        "trend_filter": "EMA_200",
+        "structure_model": "market_structure",
+        "require_bos_confirmation": true,
+        "min_confluence_score": 85
+      },
+
+      "risk_management": {
+        "fixed_lot_size": 0.01,
+        "risk_per_trade_percent": 0.5,
+        "max_daily_risk_percent": 2.0,
+        "max_open_positions": 1
+      },
+
+      "trade_limits": {
+        "max_trades_per_day": 2,
+        "max_trades_per_week": 20,
+        "max_consecutive_losses": 3,
+        "cooldown_after_loss_minutes": 120
+      },
+
+      "sessions": {
+        "allowed": ["london", "new_york"]
+      },
+
+      "stop_loss_take_profit": {
+        "sl_method": "ATR",
+        "atr_period": 14,
+        "atr_multiplier": 2.5,
+        "tp_method": "risk_reward",
+        "risk_reward_ratio": 3.0,
+        "trailing_stop_enabled": true,
+        "break_even_at_rr": 1.0
+      },
+
+      "market_conditions": {
+        "avoid_news_windows": true,
+        "avoid_high_volatility_spikes": true
+      },
+
+      "trade_style": {
+        "mode": "scalping",
+        "allowed_values": ["scalping", "day_trade", "swing"],
+
+        "bos_validation": {
+          "scalping": {
+            "require_retest": false,
+            "confirmation_candles": 0,
+            "max_confirmation_delay_bars": 3
+          },
+
+          "day_trade": {
+            "require_retest": true,
+            "confirmation_candles": 1,
+            "max_confirmation_delay_bars": 10
+          },
+
+          "swing": {
+            "require_retest": true,
+            "confirmation_candles": 2,
+            "max_confirmation_delay_bars": 50
+          }
+        }
+      }
+    }
+  },
+
+  "portfolio_layer": {
+    "max_simultaneous_positions": 3,
+    "correlation_monitoring_enabled": true,
+    "force_diversification": true
+  },
+
+  "emergency_controls": {
+    "kill_switch_enabled": true,
+    "close_all_positions_on_trigger": true,
+    "manual_override_enabled": true
+  },
+
+  "future_integration_hooks": {
+    "ai_module_reserved": true,
+    "feature_store_enabled": true,
+    "event_stream_logging": true,
+    "strategy_plug_in_interface": true
+  }
+}
